@@ -50,8 +50,6 @@ typedef struct
     uint16_t division;
 } Header;
 
-// Only FF 51 is decode
-
 typedef struct
 {
     uint32_t v_time;
@@ -99,31 +97,16 @@ void extract_midi(FILE* f, MidiMessage* m)
     switch ((m->status >> 4) & 0xF)
     {
         case 0x8:
-            fread(m->bytes, 1, 2, f);
-            break;
-
         case 0x9:
-            fread(m->bytes, 1, 2, f);
-            break;
-
         case 0xA:
-            fread(m->bytes, 1, 2, f);
-            break;
-
         case 0xB:
             fread(m->bytes, 1, 2, f);
             break;
 
         case 0xC:
-            fread(m->bytes, 1, 1, f);
-            break;
-
         case 0xD:
-            fread(m->bytes, 1, 1, f);
-            break;
-
         case 0xE:
-            fread(m->bytes, 1, 2, f);
+            fread(m->bytes, 1, 1, f);
             break;
 
         default:
@@ -179,7 +162,7 @@ bool extract_event(FILE* f, Track* t)
                 else
                 {
                     t->midiMsg[t->nbr_midi].status = t->midiMsg[t->nbr_midi - 1].status;
-                    fseek(f, -1, SEEK_CUR);
+                    fseek(f, -1, SEEK_CUR); // no need to read status
                 }
                 extract_midi(f, &(t->midiMsg[t->nbr_midi]));
                 t->nbr_midi++;
