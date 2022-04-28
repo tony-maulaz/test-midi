@@ -186,11 +186,15 @@ int main()
 
     // print event note
     for(int i=0; i<t.nbr_midi; i++){
+        #if(0) // print event to stop note
         if( (t.midiMsg[i].status & 0xF0) == 0x80 ){
-            //uint16_t note = t.midiMsg[i].bytes[0];
-            //printf("Event time : %d - Note : %d - vel : %d OFF\n", t.midiMsg[i].v_time, note, t.midiMsg[i].bytes[1]);
+            uint16_t note = t.midiMsg[i].bytes[0];
+            printf("Event time : %d - Note : %d - vel : %d OFF\n", t.midiMsg[i].v_time, note, t.midiMsg[i].bytes[1]);
         }
-        else if( (t.midiMsg[i].status & 0xF0) == 0x90 && t.midiMsg[i].bytes[1] != 0){
+        #endif
+
+        // print all note on when velocity is more than 0
+        if( (t.midiMsg[i].status & 0xF0) == 0x90 && t.midiMsg[i].bytes[1] != 0){
             uint16_t note = t.midiMsg[i].bytes[0];
             printf("Event time : %d - Note : %d ON\n", t.midiMsg[i].v_time, note );
         }
