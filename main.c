@@ -183,6 +183,8 @@ int main()
 
     extract_header(fp, &h);
     extract_event(fp, &t);
+    
+    fclose(fp);
 
     // print event note
     for(int i=0; i<t.nbr_midi; i++){
@@ -199,6 +201,4 @@ int main()
             printf("Event time : %d - Note : %d ON\n", t.midiMsg[i].v_time, note );
         }
     }
-    
-    fclose(fp);
 }
