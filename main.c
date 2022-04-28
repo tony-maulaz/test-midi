@@ -36,8 +36,9 @@ uint32_t read_vlv(FILE* f)
     {
         fread(&v, 1, 1, f);
         value = (value << 7) | (v & 0x7F);
-        bool msb = v & 0x80;
     } while ((v & 0x80) == 0x80);
+
+    return value;
 }
 
 #pragma pack(1)
@@ -93,7 +94,6 @@ void extract_meta_event(FILE* f, MetaEvent* m)
 
 void extract_midi(FILE* f, MidiMessage* m)
 {
-    uint8_t status = (m->status >> 4) & 0xF;
     switch ((m->status >> 4) & 0xF)
     {
         case 0x8:
@@ -117,9 +117,6 @@ void extract_midi(FILE* f, MidiMessage* m)
 
 void extract_header(FILE* f, Header* h)
 {
-    char buff[100];
-
-    // mthd
     fread(h->mthd, 4, 1, f);
     h->header_size = read_32(f);
     h->format = read_16(f);
@@ -190,7 +187,7 @@ int main()
     // print event note
     for(int i=0; i<t.nbr_midi; i++){
         if( (t.midiMsg[i].status & 0xF0) == 0x80 ){
-            uint16_t note = t.midiMsg[i].bytes[0];
+            //uint16_t note = t.midiMsg[i].bytes[0];
             //printf("Event time : %d - Note : %d - vel : %d OFF\n", t.midiMsg[i].v_time, note, t.midiMsg[i].bytes[1]);
         }
         else if( (t.midiMsg[i].status & 0xF0) == 0x90 && t.midiMsg[i].bytes[1] != 0){
